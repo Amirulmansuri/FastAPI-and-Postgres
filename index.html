@@ -1026,9 +1026,9 @@
         // Override with ?api=http://host:port
         const qs = new URLSearchParams(location.search);
         const API = (
-          qs.get("api") ||
-          (location.port === "8000" ? "" : "http://127.0.0.1:8000")
-        ).replace(/\/$/, "");
+            qs.get("api") ||
+            "https://fastapi-and-postgres-60z1.onrender.com"
+            ).replace(/\/$/, "");
         const $ = (s) => document.querySelector(s);
         const state = {
           page: 1,
