@@ -1,0 +1,1509 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Registry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0b0c11;
+        --panel: #12141b;
+        --panel-2: #181b24;
+        --line: rgba(255, 255, 255, 0.07);
+        --line-2: rgba(255, 255, 255, 0.12);
+        --text: #eceef5;
+        --muted: #8c91a6;
+        --accent: #8b7bff;
+        --accent-2: #5eead4;
+        --ap: #5eead4;
+        --a: #6ee7a8;
+        --b: #7aa8ff;
+        --c: #fbbf6a;
+        --f: #ff7b8a;
+        --serif: "Fraunces", Georgia, serif;
+        --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html {
+        color-scheme: dark;
+      }
+      body {
+        font: 500 15px/1.5 var(--sans);
+        color: var(--text);
+        background: var(--bg);
+        min-height: 100vh;
+        background-image:
+          radial-gradient(
+            900px 500px at 12% -10%,
+            rgba(139, 123, 255, 0.16),
+            transparent 60%
+          ),
+          radial-gradient(
+            700px 420px at 95% 0%,
+            rgba(94, 234, 212, 0.09),
+            transparent 60%
+          );
+        background-attachment: fixed;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+        color: inherit;
+      }
+      button {
+        cursor: pointer;
+        border: 0;
+        background: none;
+      }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+        border-radius: 8px;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 28px 20px 64px;
+      }
+
+      /* header */
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+      h1 {
+        font: 600 clamp(26px, 4vw, 36px)/1.1 var(--serif);
+        letter-spacing: -0.02em;
+      }
+      .sub {
+        color: var(--muted);
+        margin-top: 6px;
+        font-size: 14px;
+      }
+      .top-r {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--muted);
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--muted);
+      }
+      .status.on .dot {
+        background: var(--a);
+        box-shadow: 0 0 0 4px rgba(110, 231, 168, 0.15);
+      }
+      .status.off .dot {
+        background: var(--f);
+        box-shadow: 0 0 0 4px rgba(255, 123, 138, 0.15);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        border: 1px solid var(--line-2);
+        background: var(--panel-2);
+        transition:
+          transform 0.2s var(--ease),
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .btn:hover {
+        background: #1f232e;
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+      .btn.primary {
+        background: linear-gradient(135deg, #8b7bff, #6b5cf0);
+        border-color: transparent;
+        color: #fff;
+        box-shadow: 0 8px 24px -8px rgba(139, 123, 255, 0.7);
+      }
+      .btn.primary:hover {
+        filter: brightness(1.1);
+      }
+      .btn.danger {
+        background: linear-gradient(135deg, #ff7b8a, #e5485d);
+        border-color: transparent;
+        color: #fff;
+      }
+      .btn[disabled] {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+      .btn svg,
+      .icon-btn svg {
+        width: 17px;
+        height: 17px;
+        flex: none;
+      }
+      .spin {
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* overview */
+      .overview {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 24px;
+      }
+      .ov-l,
+      .ov-r {
+        background: var(--panel);
+        padding: 24px;
+      }
+      .big {
+        font: 600 clamp(48px, 8vw, 72px)/1 var(--serif);
+        letter-spacing: -0.03em;
+        font-variant-numeric: tabular-nums;
+      }
+      .big small {
+        font: 500 14px var(--sans);
+        color: var(--muted);
+        letter-spacing: 0;
+        margin-left: 8px;
+      }
+      .mini {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 22px;
+      }
+      .mini b {
+        display: block;
+        font: 600 22px/1.2 var(--serif);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .mini span {
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      .ov-r h2 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .ov-r p {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 18px;
+      }
+      .dist {
+        display: flex;
+        height: 14px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: var(--panel-2);
+        gap: 2px;
+      }
+      .dist i {
+        display: block;
+        height: 100%;
+        min-width: 0;
+        transition: flex-grow 0.7s var(--ease);
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        margin-top: 16px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .legend span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend em {
+        font-style: normal;
+        color: var(--text);
+        font-weight: 700;
+      }
+      .legend s {
+        width: 9px;
+        height: 9px;
+        border-radius: 3px;
+        display: block;
+      }
+
+      /* toolbar */
+      .bar-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+      .field {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        transition: border-color 0.2s;
+      }
+      .field:focus-within {
+        border-color: var(--accent);
+      }
+      .field label {
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      .field select {
+        background: transparent;
+        border: 0;
+        outline: 0;
+        height: 100%;
+        padding-right: 4px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .field select option {
+        background: #181b24;
+      }
+      .icon-btn {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        transition:
+          background 0.2s,
+          transform 0.2s var(--ease);
+      }
+      .icon-btn:hover {
+        background: var(--panel-2);
+      }
+      .icon-btn:active {
+        transform: scale(0.94);
+      }
+      .icon-btn svg {
+        transition: transform 0.35s var(--ease);
+      }
+      #orderBtn[data-o="desc"] svg {
+        transform: rotate(180deg);
+      }
+      .grow {
+        flex: 1;
+      }
+
+      /* table */
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        text-align: left;
+        font-weight: 600;
+        font-size: 12.5px;
+        color: var(--muted);
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--line);
+      }
+      td {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
+      }
+      tbody tr {
+        transition: background 0.2s;
+        animation: rowIn 0.45s var(--ease) both;
+        animation-delay: calc(var(--i, 0) * 35ms);
+      }
+      tbody tr:hover {
+        background: rgba(255, 255, 255, 0.025);
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      @keyframes rowIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+      }
+      .who {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+      .who b {
+        display: block;
+        font-weight: 600;
+      }
+      .who small {
+        display: block;
+        color: var(--muted);
+        font-size: 12.5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .av {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: 13px;
+        flex: none;
+        background: linear-gradient(
+          135deg,
+          hsl(var(--h) 70% 62%),
+          hsl(calc(var(--h) + 40) 70% 45%)
+        );
+        color: #0b0c11;
+      }
+      .id {
+        font-variant-numeric: tabular-nums;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .marks {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 120px;
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+      }
+      .track {
+        flex: 1;
+        height: 6px;
+        border-radius: 99px;
+        background: var(--panel-2);
+        overflow: hidden;
+      }
+      .track i {
+        display: block;
+        height: 100%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        transform-origin: left;
+        animation: grow 0.8s var(--ease) both;
+      }
+      @keyframes grow {
+        from {
+          transform: scaleX(0);
+        }
+      }
+      .grade {
+        display: inline-block;
+        min-width: 36px;
+        text-align: center;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--gc);
+        background: color-mix(in srgb, var(--gc) 14%, transparent);
+        border: 1px solid color-mix(in srgb, var(--gc) 30%, transparent);
+      }
+      .g-ap {
+        --gc: var(--ap);
+      }
+      .g-a {
+        --gc: var(--a);
+      }
+      .g-b {
+        --gc: var(--b);
+      }
+      .g-c {
+        --gc: var(--c);
+      }
+      .g-f {
+        --gc: var(--f);
+      }
+      .act {
+        display: flex;
+        gap: 4px;
+        justify-content: flex-end;
+      }
+      .act button {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        color: var(--muted);
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .act button:hover {
+        background: var(--panel-2);
+        color: var(--text);
+      }
+      .act button[data-act="del"]:hover {
+        color: var(--f);
+      }
+      .act svg {
+        width: 17px;
+        height: 17px;
+      }
+      .skel td div {
+        height: 14px;
+        border-radius: 6px;
+        background: linear-gradient(
+          90deg,
+          var(--panel-2) 25%,
+          #222634 50%,
+          var(--panel-2) 75%
+        );
+        background-size: 200% 100%;
+        animation: sh 1.2s infinite;
+      }
+      @keyframes sh {
+        to {
+          background-position: -200% 0;
+        }
+      }
+      .empty {
+        padding: 56px 20px;
+        text-align: center;
+        color: var(--muted);
+      }
+      .empty h3 {
+        font: 600 20px var(--serif);
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      .empty .btn {
+        margin-top: 16px;
+      }
+
+      /* pager */
+      .pager {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 13.5px;
+      }
+      .pages {
+        display: flex;
+        gap: 6px;
+      }
+      .pages button {
+        min-width: 38px;
+        height: 38px;
+        padding: 0 10px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        transition: background 0.2s;
+      }
+      .pages button:hover:not([disabled]) {
+        background: var(--panel-2);
+      }
+      .pages button.cur {
+        background: var(--accent);
+        border-color: transparent;
+        color: #fff;
+      }
+      .pages button[disabled] {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+
+      /* dialogs */
+      dialog {
+        margin: auto;
+        border: 1px solid var(--line-2);
+        border-radius: 22px;
+        background: var(--panel);
+        color: var(--text);
+        padding: 0;
+        width: min(520px, calc(100vw - 24px));
+        max-height: calc(100vh - 24px);
+        overflow: auto;
+        box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.7);
+      }
+      dialog[open] {
+        animation: pop 0.35s var(--ease);
+      }
+      dialog::backdrop {
+        background: rgba(5, 6, 10, 0.65);
+        backdrop-filter: blur(6px);
+        animation: fade 0.3s;
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: translateY(14px) scale(0.97);
+        }
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+      }
+      .dlg {
+        padding: 26px;
+      }
+      .dlg h2 {
+        font: 600 24px/1.2 var(--serif);
+        margin-bottom: 4px;
+      }
+      .dlg .hint {
+        color: var(--muted);
+        font-size: 13.5px;
+        margin-bottom: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .grid .full {
+        grid-column: 1/-1;
+      }
+      .fl label {
+        display: block;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .fl input {
+        width: 100%;
+        height: 44px;
+        padding: 0 14px;
+        border-radius: 12px;
+        border: 1px solid var(--line-2);
+        background: var(--bg);
+        outline: 0;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .fl input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px rgba(139, 123, 255, 0.18);
+      }
+      .fl input:disabled {
+        opacity: 0.55;
+      }
+      .fl input:user-invalid {
+        border-color: var(--f);
+      }
+      .ferr {
+        margin-top: 14px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        background: rgba(255, 123, 138, 0.1);
+        border: 1px solid rgba(255, 123, 138, 0.3);
+        color: #ffb3bc;
+        font-size: 13.5px;
+      }
+      .foot {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 22px;
+      }
+      .detail {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .detail .av {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        font-size: 20px;
+      }
+      .facts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .facts div {
+        background: var(--panel-2);
+        padding: 12px 14px;
+      }
+      .facts span {
+        display: block;
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      .facts b {
+        font-weight: 600;
+        word-break: break-word;
+      }
+
+      /* toast */
+      #toasts {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 99;
+        pointer-events: none;
+      }
+      .toast {
+        padding: 12px 16px;
+        border-radius: 14px;
+        background: var(--panel-2);
+        border: 1px solid var(--line-2);
+        box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6);
+        max-width: 340px;
+        font-size: 14px;
+        animation: pop 0.35s var(--ease);
+        border-left: 3px solid var(--a);
+      }
+      .toast.err {
+        border-left-color: var(--f);
+      }
+      .toast.out {
+        opacity: 0;
+        transform: translateX(12px);
+        transition: 0.3s;
+      }
+
+      /* responsive */
+      @media (max-width: 860px) {
+        .overview {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 760px) {
+        thead {
+          display: none;
+        }
+        table,
+        tbody,
+        tr,
+        td {
+          display: block;
+          width: 100%;
+        }
+        tr {
+          padding: 14px 16px;
+          border-bottom: 1px solid var(--line);
+        }
+        tbody tr:last-child {
+          border-bottom: 0;
+        }
+        td {
+          border: 0;
+          padding: 6px 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 16px;
+        }
+        td::before {
+          content: attr(data-label);
+          color: var(--muted);
+          font-size: 12.5px;
+          flex: none;
+        }
+        td[data-label="Student"]::before,
+        td[data-label="Actions"]::before {
+          display: none;
+        }
+        td[data-label="Student"] {
+          padding-bottom: 10px;
+        }
+        .marks {
+          flex: 1;
+          max-width: 200px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .mini {
+          grid-template-columns: 1fr 1fr;
+        }
+        .top-r {
+          width: 100%;
+          justify-content: space-between;
+        }
+        .field {
+          flex: 1;
+        }
+        .toolbar-end {
+          width: 100%;
+        }
+        #toasts {
+          left: 12px;
+          right: 12px;
+        }
+        .toast {
+          max-width: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <div>
+          <h1>Student Registry</h1>
+          <p class="sub">Add, update and review every student in one place.</p>
+        </div>
+        <div class="top-r">
+          <div class="status" id="status" role="status">
+            <span class="dot"></span><span id="statusTxt">Connecting…</span>
+          </div>
+          <button class="btn primary" id="addBtn">
+            <span data-i="plus"></span>Add student
+          </button>
+        </div>
+      </header>
+
+      <section class="overview" aria-label="Overview">
+        <div class="ov-l">
+          <div class="big">
+            <span id="stTotal">0</span><small>students enrolled</small>
+          </div>
+          <div class="mini">
+            <div><b id="stAvg">–</b><span>Average marks</span></div>
+            <div><b id="stTop">–</b><span>Top scorer</span></div>
+            <div><b id="stCourses">–</b><span>Courses</span></div>
+          </div>
+        </div>
+        <div class="ov-r">
+          <h2>Grade distribution</h2>
+          <p>Share of students in each grade band.</p>
+          <div class="dist" id="dist" aria-hidden="true"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+      </section>
+
+      <div class="bar-tools">
+        <div class="field">
+          <label for="fCourse">Course</label
+          ><select id="fCourse">
+            <option value="">All courses</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fSort">Sort</label
+          ><select id="fSort">
+            <option value="">Student ID</option>
+            <option value="marks">Marks</option>
+            <option value="age">Age</option>
+            <option value="name">Name</option>
+          </select>
+        </div>
+        <button
+          class="icon-btn"
+          id="orderBtn"
+          data-o="asc"
+          title="Ascending"
+          aria-label="Toggle sort order"
+        >
+          <span data-i="arrow"></span>
+        </button>
+        <div class="grow"></div>
+        <div class="field">
+          <label for="fLimit">Per page</label
+          ><select id="fLimit">
+            <option>5</option>
+            <option selected>10</option>
+            <option>25</option>
+            <option>50</option>
+          </select>
+        </div>
+        <button
+          class="icon-btn"
+          id="refreshBtn"
+          title="Refresh"
+          aria-label="Refresh"
+        >
+          <span data-i="refresh"></span>
+        </button>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Student</th>
+              <th>Course</th>
+              <th>Age</th>
+              <th>Marks</th>
+              <th>Grade</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="empty" id="empty" hidden></div>
+      </div>
+
+      <div class="pager">
+        <span id="pageInfo"></span>
+        <div class="pages" id="pages"></div>
+      </div>
+    </div>
+
+    <dialog id="formDlg">
+      <form class="dlg" id="form" autocomplete="off">
+        <h2 id="formTitle">Add student</h2>
+        <p class="hint" id="formHint">Fill in the details below.</p>
+        <div class="grid">
+          <div class="fl">
+            <label for="iId">Student ID</label
+            ><input
+              id="iId"
+              name="id"
+              required
+              maxlength="10"
+              placeholder="S011"
+            />
+          </div>
+          <div class="fl">
+            <label for="iAge">Age</label
+            ><input
+              id="iAge"
+              name="age"
+              type="number"
+              required
+              min="1"
+              max="100"
+              placeholder="21"
+            />
+          </div>
+          <div class="fl full">
+            <label for="iName">Full name</label
+            ><input
+              id="iName"
+              name="name"
+              required
+              minlength="2"
+              maxlength="50"
+              pattern="[A-Za-z ]+"
+              title="Letters and spaces only"
+              placeholder="Aarav Sharma"
+            />
+          </div>
+          <div class="fl full">
+            <label for="iEmail">Email</label
+            ><input
+              id="iEmail"
+              name="email"
+              type="email"
+              required
+              placeholder="name@example.com"
+            />
+          </div>
+          <div class="fl">
+            <label for="iCourse">Course</label
+            ><input
+              id="iCourse"
+              name="course"
+              required
+              maxlength="50"
+              list="courseList"
+              placeholder="Data Science"
+            /><datalist id="courseList"></datalist>
+          </div>
+          <div class="fl">
+            <label for="iMarks">Marks (0–100)</label
+            ><input
+              id="iMarks"
+              name="marks"
+              type="number"
+              required
+              min="0"
+              max="100"
+              placeholder="85"
+            />
+          </div>
+        </div>
+        <div class="ferr" id="ferr" hidden></div>
+        <div class="foot">
+          <button type="button" class="btn" data-close>Cancel</button>
+          <button type="submit" class="btn primary" id="saveBtn">
+            Save student
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="viewDlg"><div class="dlg" id="viewBody"></div></dialog>
+
+    <dialog id="delDlg">
+      <div class="dlg">
+        <h2>Delete student?</h2>
+        <p class="hint" id="delTxt"></p>
+        <div class="foot">
+          <button class="btn" data-close>Keep student</button>
+          <button class="btn danger" id="delBtn">Delete student</button>
+        </div>
+      </div>
+    </dialog>
+
+    <div id="toasts" aria-live="polite"></div>
+    <script>
+      (() => {
+        "use strict";
+        // API base: same origin when served by FastAPI (port 8000); otherwise FastAPI on 127.0.0.1:8000.
+        // Override with ?api=http://host:port
+        const qs = new URLSearchParams(location.search);
+        const API = (
+          qs.get("api") ||
+          (location.port === "8000" ? "" : "http://127.0.0.1:8000")
+        ).replace(/\/$/, "");
+        const $ = (s) => document.querySelector(s);
+        const state = {
+          page: 1,
+          limit: 10,
+          course: "",
+          sort_by: "",
+          order: "asc",
+          total: 0,
+        };
+        let current = []; // rows on screen
+        let editing = null; // student being edited
+        let deleting = null;
+
+        const ICON = {
+          plus: '<path d="M12 5v14M5 12h14"/>',
+          arrow: '<path d="M12 19V5M5 12l7-7 7 7"/>',
+          refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+          eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+          edit: '<path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/>',
+          trash:
+            '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+        };
+        const svg = (n) =>
+          `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON[n]}</svg>`;
+        document
+          .querySelectorAll("[data-i]")
+          .forEach((el) => (el.outerHTML = svg(el.dataset.i)));
+
+        const esc = (s) =>
+          String(s).replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              })[c],
+          );
+        const initials = (n) =>
+          n
+            .split(" ")
+            .filter(Boolean)
+            .map((w) => w[0])
+            .slice(0, 2)
+            .join("")
+            .toUpperCase();
+        const hue = (s) =>
+          [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+        const GC = { "A+": "ap", A: "a", B: "b", C: "c", F: "f" };
+        const GCOL = {
+          "A+": "var(--ap)",
+          A: "var(--a)",
+          B: "var(--b)",
+          C: "var(--c)",
+          F: "var(--f)",
+        };
+
+        /* ---------- network ---------- */
+        async function api(path, opts = {}) {
+          let res;
+          try {
+            res = await fetch(API + path, {
+              headers: { "Content-Type": "application/json" },
+              ...opts,
+            });
+          } catch {
+            setStatus(false);
+            throw new Error(
+              "Cannot reach the API at " +
+                (API || location.origin) +
+                ". Start the server: uvicorn main:app --reload",
+            );
+          }
+          let data = null;
+          try {
+            data = await res.json();
+          } catch {
+            /* empty body */
+          }
+          if (!res.ok) {
+            const d = data && data.detail;
+            throw new Error(
+              Array.isArray(d)
+                ? d
+                    .map((e) => `${e.loc[e.loc.length - 1]}: ${e.msg}`)
+                    .join(" · ")
+                : d || `Request failed (${res.status})`,
+            );
+          }
+          return data;
+        }
+
+        function setStatus(on) {
+          $("#status").className = "status " + (on ? "on" : "off");
+          $("#statusTxt").textContent = on ? "API online" : "API offline";
+        }
+
+        // Green only when the real student API answers (FastAPI publishes /openapi.json)
+        async function ping() {
+          try {
+            const r = await fetch(API + "/openapi.json");
+            const j = await r.json();
+            setStatus(!!(j.paths && j.paths["/students"]));
+          } catch {
+            setStatus(false);
+          }
+        }
+
+        /* ---------- toasts ---------- */
+        function toast(msg, err = false) {
+          const t = document.createElement("div");
+          t.className = "toast" + (err ? " err" : "");
+          t.textContent = msg;
+          $("#toasts").appendChild(t);
+          setTimeout(() => {
+            t.classList.add("out");
+            setTimeout(() => t.remove(), 300);
+          }, 3800);
+        }
+
+        /* ---------- list ---------- */
+        function skeleton() {
+          $("#empty").hidden = true;
+          $("#rows").innerHTML = Array.from(
+            { length: Math.min(state.limit, 6) },
+            () => `<tr class="skel">${"<td><div></div></td>".repeat(7)}</tr>`,
+          ).join("");
+        }
+
+        async function loadList() {
+          skeleton();
+          const p = new URLSearchParams({
+            page: state.page,
+            limit: state.limit,
+            order: state.order,
+          });
+          if (state.course) p.set("course", state.course);
+          if (state.sort_by) p.set("sort_by", state.sort_by);
+          try {
+            const d = await api("/students?" + p);
+            state.total = d.total_students;
+            const pages = Math.max(
+              1,
+              Math.ceil(d.total_students / state.limit),
+            );
+            if (state.page > pages) {
+              state.page = pages;
+              return loadList();
+            }
+            current = d.students;
+            renderRows();
+            renderPager(pages);
+          } catch (e) {
+            $("#rows").innerHTML = "";
+            showEmpty("Something went wrong", e.message, true);
+            $("#pages").innerHTML = "";
+            $("#pageInfo").textContent = "";
+            toast(e.message, true);
+          }
+        }
+
+        function showEmpty(title, text, retry) {
+          const el = $("#empty");
+          el.hidden = false;
+          el.innerHTML = `<h3>${esc(title)}</h3><p>${esc(text)}</p><button class="btn ${retry ? "" : "primary"}" id="emptyBtn">${retry ? "Try again" : "Add student"}</button>`;
+          $("#emptyBtn").onclick = retry ? refreshAll : () => openForm();
+        }
+
+        function renderRows() {
+          if (!current.length) {
+            $("#rows").innerHTML = "";
+            return showEmpty(
+              "No students found",
+              state.course
+                ? "No one is enrolled in this course yet."
+                : "Add your first student to get started.",
+            );
+          }
+          $("#empty").hidden = true;
+          $("#rows").innerHTML = current
+            .map(
+              (s, i) => `
+      <tr style="--i:${i}" data-id="${esc(s.id)}">
+        <td data-label="ID"><span class="id">${esc(s.id)}</span></td>
+        <td data-label="Student"><div class="who"><span class="av" style="--h:${hue(s.name)}">${esc(initials(s.name))}</span>
+          <div><b>${esc(s.name)}</b><small>${esc(s.email)}</small></div></div></td>
+        <td data-label="Course">${esc(s.course)}</td>
+        <td data-label="Age">${s.age}</td>
+        <td data-label="Marks"><div class="marks"><div class="track"><i style="width:${s.marks}%"></i></div>${s.marks}</div></td>
+        <td data-label="Grade"><span class="grade g-${GC[s.grade] || "f"}">${esc(s.grade)}</span></td>
+        <td data-label="Actions"><div class="act">
+          <button data-act="view" title="View" aria-label="View ${esc(s.name)}">${svg("eye")}</button>
+          <button data-act="edit" title="Edit" aria-label="Edit ${esc(s.name)}">${svg("edit")}</button>
+          <button data-act="del" title="Delete" aria-label="Delete ${esc(s.name)}">${svg("trash")}</button></div></td>
+      </tr>`,
+            )
+            .join("");
+        }
+
+        function renderPager(pages) {
+          const from = state.total ? (state.page - 1) * state.limit + 1 : 0;
+          const to = Math.min(state.page * state.limit, state.total);
+          $("#pageInfo").textContent = state.total
+            ? `Showing ${from}–${to} of ${state.total}`
+            : "";
+          const nums = [];
+          const start = Math.max(1, Math.min(state.page - 2, pages - 4));
+          for (let n = start; n <= Math.min(pages, start + 4); n++)
+            nums.push(n);
+          $("#pages").innerHTML =
+            pages < 2
+              ? ""
+              : `<button data-p="${state.page - 1}" ${state.page === 1 ? "disabled" : ""} aria-label="Previous page">‹</button>` +
+                nums
+                  .map(
+                    (n) =>
+                      `<button data-p="${n}" class="${n === state.page ? "cur" : ""}">${n}</button>`,
+                  )
+                  .join("") +
+                `<button data-p="${state.page + 1}" ${state.page === pages ? "disabled" : ""} aria-label="Next page">›</button>`;
+        }
+
+        /* ---------- overview ---------- */
+        function countUp(el, to, dec = 0) {
+          const from = parseFloat(el.dataset.v || 0);
+          el.dataset.v = to;
+          const t0 = performance.now();
+          (function tick(t) {
+            const k = Math.min(1, (t - t0) / 700),
+              e = 1 - Math.pow(1 - k, 3);
+            el.textContent = (from + (to - from) * e).toFixed(dec);
+            if (k < 1) requestAnimationFrame(tick);
+          })(t0);
+        }
+
+        async function loadOverview() {
+          try {
+            const d = await api("/students?limit=100&page=1");
+            const all = d.students;
+            countUp($("#stTotal"), d.total_students);
+            if (!all.length) {
+              $("#stAvg").textContent = "–";
+              $("#stTop").textContent = "–";
+              $("#stCourses").textContent = "0";
+            } else {
+              const avg = all.reduce((a, s) => a + s.marks, 0) / all.length;
+              const top = all.reduce((a, s) => (s.marks > a.marks ? s : a));
+              $("#stAvg").textContent = avg.toFixed(1);
+              $("#stTop").textContent =
+                top.name.split(" ")[0] + " · " + top.marks;
+              $("#stCourses").textContent = new Set(
+                all.map((s) => s.course.toLowerCase()),
+              ).size;
+            }
+            const counts = { "A+": 0, A: 0, B: 0, C: 0, F: 0 };
+            all.forEach((s) => counts[s.grade]++);
+            $("#dist").innerHTML = Object.keys(counts)
+              .map(
+                (g) =>
+                  `<i style="flex-grow:${counts[g]};background:${GCOL[g]}" title="${g}: ${counts[g]}"></i>`,
+              )
+              .join("");
+            $("#legend").innerHTML = Object.keys(counts)
+              .map(
+                (g) =>
+                  `<span><s style="background:${GCOL[g]}"></s>${g} <em>${counts[g]}</em></span>`,
+              )
+              .join("");
+            // course filter + suggestions
+            const names = [
+              ...new Map(
+                all.map((s) => [s.course.toLowerCase(), s.course]),
+              ).values(),
+            ].sort();
+            const sel = $("#fCourse"),
+              keep = state.course;
+            sel.innerHTML =
+              '<option value="">All courses</option>' +
+              names.map((n) => `<option>${esc(n)}</option>`).join("");
+            if (
+              keep &&
+              !names.some((n) => n.toLowerCase() === keep.toLowerCase())
+            ) {
+              state.course = "";
+            }
+            sel.value =
+              names.find(
+                (n) => n.toLowerCase() === state.course.toLowerCase(),
+              ) || "";
+            $("#courseList").innerHTML = names
+              .map((n) => `<option value="${esc(n)}">`)
+              .join("");
+          } catch {
+            /* list loader already reports errors */
+          }
+        }
+
+        // ping() added so the status badge is always checked on refresh
+        const refreshAll = () =>
+          Promise.all([ping(), loadList(), loadOverview()]);
+
+        /* ---------- dialogs ---------- */
+        document.querySelectorAll("dialog").forEach((d) => {
+          d.addEventListener("click", (e) => {
+            if (e.target === d) d.close();
+          });
+          d.querySelectorAll("[data-close]").forEach((b) =>
+            b.addEventListener("click", () => d.close()),
+          );
+        });
+
+        function openForm(s = null) {
+          editing = s;
+          const f = $("#form");
+          f.reset();
+          $("#ferr").hidden = true;
+          $("#formTitle").textContent = s ? "Edit student" : "Add student";
+          $("#formHint").textContent = s
+            ? `Update the details for ${s.name}.`
+            : "Fill in the details below.";
+          $("#saveBtn").textContent = s ? "Save changes" : "Add student";
+          $("#iId").disabled = !!s;
+          if (s)
+            for (const k of ["id", "name", "age", "email", "course", "marks"])
+              f.elements[k].value = s[k];
+          $("#viewDlg").close();
+          $("#formDlg").showModal();
+          (s ? $("#iName") : $("#iId")).focus();
+        }
+
+        function openView(s) {
+          $("#viewBody").innerHTML = `
+      <div class="detail"><span class="av" style="--h:${hue(s.name)}">${esc(initials(s.name))}</span>
+        <div><h2>${esc(s.name)}</h2><span class="grade g-${GC[s.grade] || "f"}">Grade ${esc(s.grade)}</span></div></div>
+      <div class="facts">
+        <div><span>Student ID</span><b>${esc(s.id)}</b></div><div><span>Age</span><b>${s.age}</b></div>
+        <div><span>Course</span><b>${esc(s.course)}</b></div><div><span>Marks</span><b>${s.marks} / 100</b></div>
+        <div style="grid-column:1/-1"><span>Email</span><b>${esc(s.email)}</b></div></div>
+      <div class="foot"><button class="btn" data-close>Close</button><button class="btn primary" id="viewEdit">Edit student</button></div>`;
+          $("#viewBody").querySelector("[data-close]").onclick = () =>
+            $("#viewDlg").close();
+          $("#viewEdit").onclick = () => openForm(s);
+          $("#viewDlg").showModal();
+        }
+
+        $("#form").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const f = e.target,
+            btn = $("#saveBtn"),
+            err = $("#ferr");
+          err.hidden = true;
+          const body = {
+            id: f.elements.id.value.trim(),
+            name: f.elements.name.value.trim(),
+            age: +f.elements.age.value,
+            email: f.elements.email.value.trim(),
+            course: f.elements.course.value.trim(),
+            marks: +f.elements.marks.value,
+          };
+          let path = "/CreateStudent",
+            method = "POST",
+            payload = body;
+          if (editing) {
+            payload = {};
+            for (const k of ["name", "age", "email", "course", "marks"]) {
+              const changed =
+                k === "name"
+                  ? body[k].toLowerCase() !== editing[k].toLowerCase()
+                  : body[k] !== editing[k];
+              if (changed) payload[k] = body[k];
+            }
+            if (!Object.keys(payload).length)
+              return toast("No changes to save.");
+            path = "/UpdateStudent/" + encodeURIComponent(editing.id);
+            method = "PUT";
+          }
+          btn.disabled = true;
+          const label = btn.textContent;
+          btn.textContent = "Saving…";
+          try {
+            await api(path, { method, body: JSON.stringify(payload) });
+            $("#formDlg").close();
+            toast(editing ? "Student updated." : "Student added.");
+            await refreshAll();
+          } catch (ex) {
+            err.textContent = ex.message;
+            err.hidden = false;
+          } finally {
+            btn.disabled = false;
+            btn.textContent = label;
+          }
+        });
+
+        $("#delBtn").addEventListener("click", async () => {
+          const b = $("#delBtn");
+          b.disabled = true;
+          try {
+            await api("/DeleteStudent/" + encodeURIComponent(deleting.id), {
+              method: "DELETE",
+            });
+            $("#delDlg").close();
+            toast("Student deleted.");
+            await refreshAll();
+          } catch (ex) {
+            toast(ex.message, true);
+          } finally {
+            b.disabled = false;
+          }
+        });
+
+        /* ---------- events ---------- */
+        $("#rows").addEventListener("click", async (e) => {
+          const btn = e.target.closest("[data-act]");
+          if (!btn) return;
+          const id = btn.closest("tr").dataset.id;
+          const s = current.find((x) => x.id === id);
+          if (!s) return;
+          if (btn.dataset.act === "edit") openForm(s);
+          if (btn.dataset.act === "del") {
+            deleting = s;
+            $("#delTxt").textContent =
+              `${s.name} (${s.id}) will be removed permanently. This can’t be undone.`;
+            $("#delDlg").showModal();
+          }
+          if (btn.dataset.act === "view") {
+            try {
+              openView(await api("/student/" + encodeURIComponent(id)));
+            } catch (ex) {
+              toast(ex.message, true);
+            }
+          }
+        });
+        $("#pages").addEventListener("click", (e) => {
+          const b = e.target.closest("[data-p]");
+          if (!b) return;
+          state.page = +b.dataset.p;
+          loadList();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+        $("#fCourse").onchange = (e) => {
+          state.course = e.target.value;
+          state.page = 1;
+          loadList();
+        };
+        $("#fSort").onchange = (e) => {
+          state.sort_by = e.target.value;
+          state.page = 1;
+          loadList();
+        };
+        $("#fLimit").onchange = (e) => {
+          state.limit = +e.target.value;
+          state.page = 1;
+          loadList();
+        };
+        $("#orderBtn").onclick = (e) => {
+          const b = e.currentTarget;
+          state.order = state.order === "asc" ? "desc" : "asc";
+          b.dataset.o = state.order;
+          b.title = state.order === "asc" ? "Ascending" : "Descending";
+          state.page = 1;
+          loadList();
+        };
+        $("#refreshBtn").onclick = async (e) => {
+          const svgEl = e.currentTarget.querySelector("svg");
+          svgEl.classList.add("spin");
+          await refreshAll();
+          svgEl.classList.remove("spin");
+          toast("Data refreshed.");
+        };
+        $("#addBtn").onclick = () => openForm();
+
+        refreshAll();
+      })();
+    </script>
+  </body>
+</html>

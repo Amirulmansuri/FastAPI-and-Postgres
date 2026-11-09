@@ -169,6 +169,7 @@ def create_student(student : StudentCreate,
     try:
         db.commit()
     except IntegrityError:
+        db.rollback()
         raise HTTPException(status_code=400, detail=f"Email '{student.email}' is already used by another student")
 
     db.refresh(new_student)
