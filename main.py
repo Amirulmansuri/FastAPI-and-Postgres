@@ -9,6 +9,9 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 # Part 1 : load DATABASE_URL from the .env file
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+from sqlalchemy.engine import make_url
+_u = make_url(DATABASE_URL)
+print("DB user:", _u.username, "| host:", _u.host, "| password length:", len(_u.password or ""))
 
 
 
