@@ -125,9 +125,16 @@ def get_db():
 
 # Part 8 : Create the FastAPI app
 
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Path, Depends
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins= ["*"],
+    allow_methods= ["*"],
+    allow_headers= ["*"],
+)
 
 #part 9 : GET one student
 
